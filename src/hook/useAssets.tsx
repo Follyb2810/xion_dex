@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import { XionTransaction } from "@/helper/Xion";
 import { useAuth } from "@/context/useAuth";
 
-export interface Asset {
-  denom: string;
+export interface IAsset {
+  rawDenom: string;       
+  displayDenom: string;   
   amount: string;
 }
 
 export function useAssets() {
   const { user } = useAuth();
-  const [assets, setAssets] = useState<Asset[]>([]);
+  const [assets, setAssets] = useState<IAsset[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,28 +20,18 @@ export function useAssets() {
       setError(null);
 
       try {
-        const mockAssets: Asset[] = [
-        //   { denom: "XION", amount: "1000" },
-          { denom: "ATOM", amount: "500" },
-          { denom: "USDC", amount: "1500" },
-          { denom: "BTC", amount: "0.75" },
-          { denom: "ETH", amount: "3.25" },
-        ];
-
-        let realAssets: Asset[] = [];
-
         if (user?.walletAddress) {
           const xion = new XionTransaction();
-          const balances = await xion.getAllTokenBalances(user.walletAddress);
+          const balances = await xion.getAllTokenBalancesWithDenoms(user.walletAddress);
 
-          realAssets = balances.map(bal => ({
-            denom: bal.denom.startsWith("u") ? bal.denom.slice(1).toUpperCase() : bal.denom.toUpperCase(),
+          const formattedAssets = balances.map(bal => ({
+            rawDenom: bal.rawDenom,
+            displayDenom: bal.displayDenom,
             amount: (parseFloat(bal.amount) / 1_000_000).toString(),
           }));
-        }
 
-        const mergedAssets = [...realAssets, ...mockAssets];
-        setAssets(mergedAssets);
+          setAssets(formattedAssets);
+        }
       } catch (err) {
         console.error(err);
         setError("Failed to fetch assets");

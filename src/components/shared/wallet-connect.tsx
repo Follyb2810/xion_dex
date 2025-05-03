@@ -139,11 +139,14 @@ export function WalletConnect({ asButton = false }: WalletConnectProps) {
       {isConnected && bech32Address ? (
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" className="gap-2">
+          <div className="flex items-center gap-2 border rounded-xl py-2 px-4 hover:bg-muted transition cursor-pointer">
               <Wallet className="h-4 w-4" />
-              {maskAddress(bech32Address)}
-            </Button>
-          </PopoverTrigger>
+              <span className="text-sm font-medium">
+                {maskAddress(bech32Address)}
+              </span>
+            </div>
+            </PopoverTrigger>
+            
           <PopoverContent className="w-48">
             <div className="flex flex-col items-start space-y-2">
               <Avatar className="w-6 h-6">

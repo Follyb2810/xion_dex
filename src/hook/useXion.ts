@@ -3,9 +3,9 @@ import useMeta from "@/hook/useMeta";
 import { uxionToXion } from "@/helper/convert";
 import { DeliverTxResponse } from "@cosmjs/cosmwasm-stargate";
 import { useEffect, useState } from "react";
-import { Timestamp } from "cosmjs-types/google/protobuf/timestamp";
-import { GenericAuthorization } from "cosmjs-types/cosmos/authz/v1beta1/authz";
-import { MsgGrant } from "cosmjs-types/cosmos/authz/v1beta1/tx";
+// import { Timestamp } from "cosmjs-types/google/protobuf/timestamp";
+// import { GenericAuthorization } from "cosmjs-types/cosmos/authz/v1beta1/authz";
+// import { MsgGrant } from "cosmjs-types/cosmos/authz/v1beta1/tx";
 
 export default function useXion() {
   const { bech32Address, isConnected, isConnecting, queryClient, signingClient, signArb } = useMeta();
@@ -33,63 +33,63 @@ export default function useXion() {
     }
   };
 
-  const grantPermission = async () => {
-    if (!signingClient || !bech32Address) {
-      throw new Error("Wallet is not connected properly for granting.");
-    }
-    console.log('grantPermission 1')
+  // const grantPermission = async () => {
+  //   if (!signingClient || !bech32Address) {
+  //     throw new Error("Wallet is not connected properly for granting.");
+  //   }
+  //   console.log('grantPermission 1')
     
-    const grantee = signingClient.granteeAddress;
-    if (!grantee) {
-      throw new Error("No grantee address available.");
-    }
-    console.log('grantPermission 2')
+  //   const grantee = signingClient.granteeAddress;
+  //   if (!grantee) {
+  //     throw new Error("No grantee address available.");
+  //   }
+  //   console.log('grantPermission 2')
     
-    const now = new Date();
-    const expiration = new Date(now.getTime() + 60 * 60 * 24 * 1000); // 1 day later
-    console.log('grantPermission 3')
-    // const timestamp = Timestamp.fromPartial({
-      //   seconds: Math.floor(expiration.getTime() / 1000),
-      //   nanos: 0,
-      // });
-      const timestamp = Timestamp.fromPartial({
-        seconds: BigInt(Math.trunc(expiration.getTime() / 1000)),
-        nanos: 0,
-      });
-      console.log('grantPermission 4')
+  //   const now = new Date();
+  //   const expiration = new Date(now.getTime() + 60 * 60 * 24 * 1000); // 1 day later
+  //   console.log('grantPermission 3')
+  //   // const timestamp = Timestamp.fromPartial({
+  //     //   seconds: Math.floor(expiration.getTime() / 1000),
+  //     //   nanos: 0,
+  //     // });
+  //     const timestamp = Timestamp.fromPartial({
+  //       seconds: BigInt(Math.trunc(expiration.getTime() / 1000)),
+  //       nanos: 0,
+  //     });
+  //     console.log('grantPermission 4')
       
       
-      const grantMsg: MsgGrant = {
-        granter: bech32Address,
-        grantee: grantee,
-        grant: {
-          authorization: {
-            typeUrl: "/cosmos.authz.v1beta1.GenericAuthorization",
-            value: GenericAuthorization.encode({
-              msg: "/cosmos.bank.v1beta1.MsgSend",
-          }).finish(),
-        },
-        expiration: timestamp,
-      },
-    };
-    console.log('grantPermission 5')
+  //     const grantMsg: MsgGrant = {
+  //       granter: bech32Address,
+  //       grantee: grantee,
+  //       grant: {
+  //         authorization: {
+  //           typeUrl: "/cosmos.authz.v1beta1.GenericAuthorization",
+  //           value: GenericAuthorization.encode({
+  //             msg: "/cosmos.bank.v1beta1.MsgSend",
+  //         }).finish(),
+  //       },
+  //       expiration: timestamp,
+  //     },
+  //   };
+  //   console.log('grantPermission 5')
     
-    const fee = "auto"; 
-    const result = await signingClient.signAndBroadcast(bech32Address, [
-      {
-        typeUrl: "/cosmos.authz.v1beta1.MsgGrant",
-        value: grantMsg,
-      },
-    ], fee);
+  //   const fee = "auto"; 
+  //   const result = await signingClient.signAndBroadcast(bech32Address, [
+  //     {
+  //       typeUrl: "/cosmos.authz.v1beta1.MsgGrant",
+  //       value: grantMsg,
+  //     },
+  //   ], fee);
     
-    console.log('grantPermission 6')
-    console.log("Grant result:", result);
-    if (result.code !== 0) {
-      throw new Error(`Grant failed: ${result.msgResponses}`);
-    }
-    console.log('grantPermission 7')
-    return result
-  };
+  //   console.log('grantPermission 6')
+  //   console.log("Grant result:", result);
+  //   if (result.code !== 0) {
+  //     throw new Error(`Grant failed: ${result.msgResponses}`);
+  //   }
+  //   console.log('grantPermission 7')
+  //   return result
+  // };
   
     // xion1rs2tnhe4mxpjnedhc84pc0v7mcy5gtmglx8896
       // xion148yayskhtz68wt72sdh9v372ux3a0n7qeu65sl7hcmxtqtaddnqqphlz5y
@@ -163,6 +163,6 @@ export default function useXion() {
     getWalletQuery,
     handleSign,
     signArbResponse,
-    grantPermission
+    // grantPermission
   };
 }

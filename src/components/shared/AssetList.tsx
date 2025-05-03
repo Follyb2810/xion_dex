@@ -41,7 +41,7 @@ export default function AssetList() {
                   {asset.denom}
                 </div>
                 <div className="text-gray-700">
-                  {parseFloat(asset.amount).toLocaleString()}
+                  {asset.amount}
                 </div>
               </Card>
             ))
