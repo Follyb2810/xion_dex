@@ -3,6 +3,7 @@ import useMeta from "@/hook/useMeta";
 import { uxionToXion } from "@/helper/convert";
 import { DeliverTxResponse } from "@cosmjs/cosmwasm-stargate";
 import { useEffect, useState } from "react";
+import { MsgTransfer } from "cosmjs-types/ibc/applications/transfer/v1/tx";
 // import { Timestamp } from "cosmjs-types/google/protobuf/timestamp";
 // import { GenericAuthorization } from "cosmjs-types/cosmos/authz/v1beta1/authz";
 // import { MsgGrant } from "cosmjs-types/cosmos/authz/v1beta1/tx";
@@ -156,6 +157,76 @@ export default function useXion() {
       console.error("Error querying wallet:", error);
     }
   };
+  const getAddressTransactionsHistory = async (address: string, limit: number = 10) => {
+    const sentQuery = `message.sender='${address}'`;
+    const sentTxs = await queryClient?.searchTx(sentQuery) ?? [];
+  
+    const receivedQuery = `transfer.recipient='${address}'`;
+    const receivedTxs = await queryClient?.searchTx(receivedQuery) ?? [];
+  
+    const allTxs = [...sentTxs, ...receivedTxs]
+      .sort((a, b) => b.height - a.height)
+      .slice(0, limit);
+  
+    return allTxs;
+  };
+  const transferIbcToken = async (
+    senderAddress: string,
+    recipientAddress: string,
+    amount: string,
+    denom: string = "uxion",
+    sourcePort: string = "transfer",
+    sourceChannel: string,
+    timeoutTimestamp?: number
+  ) => {
+    console.log({ senderAddress, recipientAddress, amount, denom, sourcePort, sourceChannel, timeoutTimestamp });
+    if (!isConnected || !signingClient || !queryClient) {
+      throw new Error("Wallet not connected properly.");
+    }
+    if (senderAddress !== bech32Address) {
+      throw new Error("Sender address doesn't match connected wallet.");
+    }
+    if (!recipientAddress || Number(amount) <= 0 || !sourceChannel) {
+      throw new Error("Invalid recipient address, amount, or channel.");
+    }
+    if (!signArbResponse) {
+      throw new Error("Grant signature not found. Please sign the transaction first.");
+    }
+
+    console.log("Proceeding with IBC token transfer...");
+
+    const balance = await queryClient.getBalance(senderAddress, denom);
+    const formattedAmount = Math.floor(Number(amount) * 1e6).toString();
+    const totalNeeded = Number(formattedAmount) + 1000;
+    if (!balance || Number(balance.amount) < totalNeeded) {
+      throw new Error(`Insufficient balance. Available: ${uxionToXion(balance?.amount || "0")} ${denom}`);
+    }
+
+    const timeout = timeoutTimestamp || Math.floor(Date.now() / 1000) + 300; // Default: 5 minutes from now
+    // const timeout = timeoutTimestamp || Math.floor(Date.now() / 1000) + 300; // Default: 5 minutes from now
+    const msgTransfer = {
+      typeUrl: "/ibc.applications.transfer.v1.MsgTransfer",
+      value: MsgTransfer.fromPartial({
+        sourcePort,
+        sourceChannel,
+        token: { denom, amount: formattedAmount },
+        sender: senderAddress,
+        receiver: recipientAddress,
+        timeoutTimestamp: BigInt(timeout * 1e9), // Convert to nanoseconds
+        timeoutHeight: undefined, // Use timestamp instead of height
+      }),
+    };
+
+    const response = await signingClient.signAndBroadcast(
+      senderAddress,
+      [msgTransfer],
+      "auto"
+    );
+
+    console.log("IBC tokens transferred successfully:", response.transactionHash);
+    return response;
+  };
+  
 
   return {
     transferToken,
@@ -164,5 +235,7 @@ export default function useXion() {
     handleSign,
     signArbResponse,
     // grantPermission
+    getAddressTransactionsHistory,
+    transferIbcToken
   };
 }

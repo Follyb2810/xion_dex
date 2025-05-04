@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@burnt-labs/abstraxion": "^1.0.0-alpha.62",
+    "@chain-registry/client": "^1.53.129",
+    "@chain-registry/types": "^0.50.129",
     "@cosmjs/cosmwasm-stargate": "^0.33.1",
     "@cosmjs/proto-signing": "^0.33.1",
     "@cosmjs/tendermint-rpc": "^0.33.1",

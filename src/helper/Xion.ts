@@ -1,16 +1,21 @@
+import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Coin, StargateClient } from "@cosmjs/stargate";
 
 
 export class XionTransaction {
   private readonly XION_RPC_URL: string;
-  private readonly CHAIN_ID: string;
+  // private readonly CHAIN_ID: string;
 
   constructor() {
-    this.CHAIN_ID =  "xion-testnet-2";
+    // this.CHAIN_ID =  "xion-testnet-2";
     this.XION_RPC_URL = "https://rpc.xion-testnet-2.burnt.com";
   }
   async  getStargateClient(){
     return await StargateClient.connect(this.XION_RPC_URL)
+  }
+  
+  async getWasmClient() {
+    return await CosmWasmClient.connect(this.XION_RPC_URL);
   }
   
   async getAllTokenBalances(address: string) {
@@ -77,5 +82,22 @@ export class XionTransaction {
   
     return resolvedBalances;
   }
+  async getNftsFromContract(ownerAddress: string, contractAddress: string) {
+    try {
+      const wasmClient = await this.getWasmClient();
+      const query = {
+        tokens: {
+          owner: ownerAddress,
+          limit: 100, 
+        },
+      };
+      const response = await wasmClient.queryContractSmart(contractAddress, query);
+      return response.tokens || [];
+    } catch (error) {
+      console.error("Failed to fetch NFTs:", error);
+      return [];
+    }
+  }
+
   
 }

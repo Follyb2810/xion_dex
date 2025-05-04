@@ -30,9 +30,9 @@ export function WalletConnect({ asButton = false }: WalletConnectProps) {
     setAuthenticated,
     logout: authLogout,
     isAuthenticated,
-    user,
+    
   } = useAuth();
-  console.log(user?.walletAddress);
+
   const authInProgress = useRef(false);
   const [authLoading, setAuthLoading] = useState(false);
 
@@ -78,7 +78,6 @@ export function WalletConnect({ asButton = false }: WalletConnectProps) {
 
   useEffect(() => {
     const checkConnection = () => {
-      // Here if you want you can add connection auto-check
     };
 
     checkConnection();
@@ -113,13 +112,16 @@ export function WalletConnect({ asButton = false }: WalletConnectProps) {
 
   const buttonContent = isConnecting
     ? "Connecting..."
+    : authLoading
+   ? "Authenticating..."
     : isConnected
     ? "Disconnect Wallet"
     : "Connect Wallet";
 
+  
   if (asButton) {
     return (
-      <>
+      <section className="w-full">
         <Button
           onClick={isConnected ? disconnectWallet : handleConnect}
           disabled={isConnecting || authLoading}
@@ -130,12 +132,12 @@ export function WalletConnect({ asButton = false }: WalletConnectProps) {
           {buttonContent}
         </Button>
         <Abstraxion onClose={() => setShow(false)} />
-      </>
+      </section>
     );
   }
 
   return (
-    <div>
+    <>
       {isConnected && bech32Address ? (
         <Popover>
           <PopoverTrigger asChild>
@@ -181,13 +183,10 @@ export function WalletConnect({ asButton = false }: WalletConnectProps) {
           className="gap-2"
         >
           <Wallet className="h-4 w-4" />
-          {isConnecting
-            ? "Connecting..."
-            : authLoading
-            ? "Authenticating..."
-            : "Connect Wallet"}
+          
+            {buttonContent}
         </Button>
       )}
-    </div>
+    </>
   );
 }

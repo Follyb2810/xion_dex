@@ -8,11 +8,7 @@ import Preload from "./components/shared/Preload";
 import Layout from "./Pages/Layout";
 import ErrorBoundary from "./Pages/ErrorBoundary";
 import ProtectedRoutes from "./Pages/ProtectedRoutes.tsx";
-// import Layout from "./page/Layout";
-// import ErrorBoundary from "./page/ErrorBoundary";
-// import Preload from "./components/shared/Preload";
-// import ProtectedRoutes from "./page/ProtectedRoutes";
-// import { Roles } from "./@types/types";
+
 
   
 
@@ -21,7 +17,8 @@ import ProtectedRoutes from "./Pages/ProtectedRoutes.tsx";
   const SendPage = lazy(() => import("./Pages/SendPage.tsx"));
   const SwapPage = lazy(() => import("./Pages/SwapPage.tsx"));
   const TradePage = lazy(() => import("./Pages/TradePage.tsx"));
-  // const Buyer = lazy(() => import("./page/Buyer"));
+  const HistoryPage = lazy(() => import("./Pages/HistoryPage.tsx"));
+  const IbtcTransfer = lazy(() => import("./Pages/IbtcTransfer.tsx"));
   // const AuthPage = lazy(() => import("./page/AuthPage"));
   
   const LazyWrapper = (Component: React.ComponentType) => (
@@ -45,6 +42,8 @@ import ProtectedRoutes from "./Pages/ProtectedRoutes.tsx";
               <Route path="/send" element={LazyWrapper(SendPage)} />
               <Route path="/swap" element={LazyWrapper(SwapPage)} />
               <Route path="/trade" element={LazyWrapper(TradePage)} />
+              <Route path="/history" element={LazyWrapper(HistoryPage)} />
+              <Route path="/ibtc" element={LazyWrapper(IbtcTransfer)} />
             </Route>
             {/* 
             <Route element={<ProtectedRoutes allowedRoles={[Roles.BUYER,Roles.SELLER]} />} path="shop">

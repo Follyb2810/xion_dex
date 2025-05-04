@@ -18,7 +18,8 @@ createRoot(document.getElementById('root')!).render(
         {
           // treasury: "xion17d2029pa5p9u392ja4etyg6smvdk6lsnh64mu66rs075jrs4nevs37cn3s",
           // treasury: "xion1pznw0ptf2gfkvc6u7tu6k09sm26m99dlfksen5cm2gqfp4qkmjgqzhgr4k",
-          treasury: "xion1ec2vfqsxpj36uwe05ahszvnapnm2f9vgfe6sjy50yuc9zey4w28qy0gpfv",
+          // treasury: "xion1ec2vfqsxpj36uwe05ahszvnapnm2f9vgfe6sjy50yuc9zey4w28qy0gpfv",
+          treasury: "xion17pemqrm3klnhq428qcl50akkjazn30cnnlg2ne4q63mj2phdnzsq0shd25",
           rpcUrl: "https://rpc.xion-testnet-2.burnt.com:443",
           restUrl: "https://api.xion-testnet-2.burnt.com/",
           

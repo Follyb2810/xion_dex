@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAssets } from "@/hook/useAssets";
+import { Link } from "react-router-dom";
 
 
 export default function AssetList() {
@@ -38,7 +39,7 @@ export default function AssetList() {
             assets.map((asset, idx) => (
               <Card key={idx} className="flex items-center justify-between p-4">
                 <div className="text-lg font-semibold">
-                  {asset.denom}
+                  {asset.displayDenom}
                 </div>
                 <div className="text-gray-700">
                   {asset.amount}
@@ -47,6 +48,7 @@ export default function AssetList() {
             ))
           )}
         </CardContent>
+        <Link to='/history'className="text-center" >View Address History</Link>
       </Card>
     </div>
   );

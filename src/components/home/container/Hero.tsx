@@ -21,7 +21,7 @@ export default function Hero() {
         </div>
         <div className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last">
           <img
-            src="/placeholder.svg?height=550&width=550"
+            src="https://placehold.co/600x400/transparent/F00"
             width={550}
             height={550}
             alt="Crypto illustration"

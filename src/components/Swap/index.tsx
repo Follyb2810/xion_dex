@@ -1,6 +1,6 @@
 import type React from "react"
 
-import {  useState } from "react"
+import {  useEffect, useState } from "react"
 import { Button } from "./../../components/ui/button"
 import { Card, CardContent, CardDescription,  CardHeader, CardTitle } from "./../../components/ui/card"
 import { Input } from "./../../components/ui/input"
@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { ArrowDown, ArrowLeft, RefreshCw } from "lucide-react"
 import { Link } from "react-router-dom"
 import { useToast } from "../../hook/useToast"
+import { ChainService } from "@/helper/chain"
 
 
 export default function SwapToken() {
@@ -18,6 +19,17 @@ export default function SwapToken() {
   const  toast  = useToast()
 
 
+  useEffect(() => {
+    async function ChainType() {
+      const chain = new ChainService();
+      await chain.initialize();
+      const chainData = await chain.getChain("osmosis");
+      console.log("Osmosis chain:", chainData);
+      const ibcChannels = await chain.getIbcChannels("osmosis");
+      console.log("Osmosis IBC channels:", ibcChannels);
+    }
+    ChainType();
+  }, []);
   const handleSwapTokens = () => {
     const temp = fromToken
     setFromToken(toToken)
@@ -149,6 +161,7 @@ export default function SwapToken() {
           </form>
         </CardContent>
       </Card>
+      <Link to='/ibtc'>ibtc</Link>
     </div>
   )
 }
